@@ -26,6 +26,7 @@ namespace testWPF
         public MainWindow()
         {
             InitializeComponent();
+            MainScreen.IsChecked = true;
         }
 
         private async void GetWeatherButton_Click(object sender, RoutedEventArgs e)
@@ -60,6 +61,20 @@ namespace testWPF
             string url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric";
             string response = await client.GetStringAsync(url);
             return response;
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            string objName = ((RadioButton)sender).ToString();
+            StackPanel[] panels = { MainScreenPanel };
+            foreach (StackPanel panel in panels)
+                panel.Visibility = Visibility.Hidden;
+            switch (objName)
+            {
+                case "MainScreen":
+                    MainScreenPanel.Visibility = Visibility.Visible;
+                    break;
+            }
         }
     }
 }
