@@ -42,7 +42,7 @@ namespace testWPF
                string data = await GetWeather(city);
                 var json = JObject.Parse(data);
                 string temp = json["main"]["temp"].ToString();
-                WeatherResults.Content = temp;
+                WeatherResults.Content = $"В городе {city} {Math.Round(Convert.ToSingle(temp))}°";
 
             }
             catch(HttpRequestException ex)
