@@ -22,17 +22,35 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="1">
             <RadioButton Style="{StaticResource MenuItem}" x:Name="MainScreen" Content="Главная" Checked="RadioButton_Checked" />
-            <RadioButton Style="{StaticResource MenuItem}" x:Name="NotesScreen" Content="Заметки" />
-            <RadioButton Style="{StaticResource MenuItem}" x:Name="CabinetScreen" Content="Личный кабинет" />
+            <RadioButton Style="{StaticResource MenuItem}" x:Name="NotesScreen" Content="Заметки" Checked="RadioButton_Checked"/>
+            <RadioButton Style="{StaticResource MenuItem}" x:Name="CabinetScreen" Content="Личный кабинет"  Checked="RadioButton_Checked"/>
+            <RadioButton Style="{StaticResource MenuItem}" x:Name="UserListScreen" Content="Список людей"  Checked="RadioButton_Checked"/>
         </StackPanel>
         <Label  Content="UserName" Foreground="#ffffff" FontSize="18" Margin="40,10,10,10"/>
         <Image Source="/images/exit.png" Grid.Column="1" HorizontalAlignment="Right" Height="30" Width="30" Margin="10"/>
-        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="MainScreenPanel">
+        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="MainScreenPanel" Visibility="Hidden">
             <Image Source="/Images/icon.png" Height="50" Margin="0,50,0,0"/>
             <Label Margin="0, 20, 0, 30" Content="Погодное приложение" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="22" Foreground="White"/>
             <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}" Foreground="White" materialDesign:HintAssist.Hint="Введите город" x:Name="UserCityTextBox" HorizontalAlignment="Center"  TextWrapping="Wrap" VerticalAlignment="Top" Width="243"/>
             <Button Margin="0,30,0,0" x:Name="GetWeatherButton" Content="Узнать погоду" HorizontalAlignment="Center" RenderTransformOrigin="0.151,0.434" Height="26" Width="131" FontSize="14" Click="GetWeatherButton_Click"/>
             <Label x:Name="WeatherResults" Content="" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,20,0,0" Width="180"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="UserListPanel">
+
+            <Label Margin="0, 20, 0, 15" Content="Список пользователей" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="22" Foreground="White"/>
+            <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}" Foreground="White" materialDesign:HintAssist.Hint="Введите логин" x:Name="UserLoginCheckField" HorizontalAlignment="Center"  TextWrapping="Wrap" VerticalAlignment="Top" Width="243"/>
+            <Button Margin="0,20,0,0" x:Name="DeleteUserButton" Content="Удалить" HorizontalAlignment="Center" RenderTransformOrigin="0.151,0.434" Height="26" Width="98" FontSize="14" Click="DeleteUserButton_Click"/>
+            <ListBox x:Name="UsersListBox" Margin="0,30,0,0"  Width="568">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Foreground="#ffffff" x:Name="UserLoginLabel" Content="{Binding Login}"/>
+                            <Label Foreground="#F0E68C" x:Name="UserLoginEmailLabel" Content="{Binding Email}" />
+
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </StackPanel>
     </Grid>
 </Window>

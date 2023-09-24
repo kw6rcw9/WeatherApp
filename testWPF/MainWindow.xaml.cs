@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using testWPF.Models;
+using System.Collections.ObjectModel;
 
 namespace testWPF
 {
@@ -23,10 +25,22 @@ namespace testWPF
     public partial class MainWindow : Window
     {
         private const string API_KEY = "07d1480f18fa6b47d8b43d4817eb60b3";
+        AppDbContext _db;
         public MainWindow()
         {
             InitializeComponent();
+            ObservableCollection<User> items = new ObservableCollection<User>();
+            _db = new AppDbContext();
+            List<User> list = _db.Users.Select(x => x).ToList();
+            foreach (User user in list)
+            {
+                
+                items.Add(user);
+               
+            }
+            UsersListBox.ItemsSource = items;
             MainScreen.IsChecked = true;
+            
         }
 
         private async void GetWeatherButton_Click(object sender, RoutedEventArgs e)
@@ -65,8 +79,8 @@ namespace testWPF
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            string objName = ((RadioButton)sender).ToString();
-            StackPanel[] panels = { MainScreenPanel };
+            string objName = ((RadioButton)sender).Name;
+            StackPanel[] panels = { MainScreenPanel, UserListPanel };
             foreach (StackPanel panel in panels)
                 panel.Visibility = Visibility.Hidden;
             switch (objName)
@@ -74,7 +88,35 @@ namespace testWPF
                 case "MainScreen":
                     MainScreenPanel.Visibility = Visibility.Visible;
                     break;
+                case "UserListScreen":
+                    UserListPanel.Visibility = Visibility.Visible;
+                    break;
             }
+        }
+
+        private void DeleteUserButton_Click(object sender, RoutedEventArgs e)
+        {
+            string login = UserLoginCheckField.Text.Trim();
+           
+            if (login.Equals(""))
+            {
+                MessageBox.Show("Вы что-то ввели неверно");
+                return;
+            }
+            User user = null;
+            
+                user = _db.Users.Where(x => x.Login == login ).FirstOrDefault();
+                if (user == null)
+                    MessageBox.Show("Такого пользователя не существует");
+                else
+                {
+                    _db.Users.Remove(user);
+                    _db.SaveChanges();
+                    MessageBox.Show("Пользователь удален из базы данных");
+                    UserLoginCheckField.Text = "";
+                    DeleteUserButton.Content = "Удалили";
+                }
+            
         }
     }
 }
