@@ -38,6 +38,14 @@ namespace testWPF
                 MessageBox.Show("вы что-то ввели неверно");
                 return;
             }
+            
+            User authUser = _db.Users.Where(x => x.Login == login).FirstOrDefault();
+            if(authUser != null)
+            {
+                MessageBox.Show("Такой пользователь уже есть");
+                return;
+            }
+            
 
             User user = new User(login, email, Hash(password));
             _db.Users.Add(user);
@@ -55,6 +63,14 @@ namespace testWPF
                 var hash = sha1.ComputeHash(temp);
                 return Convert.ToBase64String(hash);
             }
+        }
+
+        private void AuthWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            AuthWindow window = new AuthWindow();
+            window.Show();
+            Close();
         }
     }
 }
