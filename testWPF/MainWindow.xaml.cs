@@ -16,6 +16,8 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using testWPF.Models;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace testWPF
 {
@@ -40,7 +42,27 @@ namespace testWPF
             }
             UsersListBox.ItemsSource = items;
             MainScreen.IsChecked = true;
-            
+
+            if (!File.Exists("user.xml"))
+            {
+                ShowAuthWindow();
+            }
+           
+            XmlSerializer xml = new XmlSerializer(typeof(AuthUser));
+            using (FileStream file = new FileStream("user.xml", FileMode.Open))
+            {
+                AuthUser authUser = (AuthUser)xml.Deserialize(file);
+                UserNameLabel.Content = authUser.Login;
+            }
+
+        }
+
+        private void ShowAuthWindow()
+        {
+            Hide();
+            AuthWindow window = new AuthWindow();
+            window.Show();
+            Close();
         }
 
         private async void GetWeatherButton_Click(object sender, RoutedEventArgs e)
@@ -117,6 +139,12 @@ namespace testWPF
                     DeleteUserButton.Content = "Удалили";
                 }
             
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            File.Delete("user.xml");
+            ShowAuthWindow();
         }
     }
 }

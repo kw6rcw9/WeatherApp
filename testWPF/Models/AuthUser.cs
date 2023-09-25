@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace testWPF.Models
 {
-    internal class AuthUser
+    [Serializable]
+    public class AuthUser
     {
+        public string Login { get; set; }
+        public string Email { get; set; }
+
+        public AuthUser(string login, string email)
+        {
+            Login = login;
+            Email = email;
+        }
+        public AuthUser() { }
     }
 }

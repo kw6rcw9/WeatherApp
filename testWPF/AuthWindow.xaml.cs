@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 using testWPF.Models;
 
 namespace testWPF
@@ -26,6 +28,9 @@ namespace testWPF
         public AuthWindow()
         {
             InitializeComponent();
+            if (File.Exists("user.xml"))
+                ShowMainWindow();
+
             
         }
 
@@ -53,13 +58,26 @@ namespace testWPF
                 MessageBox.Show("Такого пользователя не существует");
             else
             {
-                Hide();
-                MainWindow window = new MainWindow();
-                window.Show();
-                Close();
+                AuthUser auth = new AuthUser(login, authUser.Email);
+                XmlSerializer xml = new XmlSerializer(typeof(AuthUser));
+                using(FileStream file = new FileStream("user.xml", FileMode.CreateNew))
+                {
+                    xml.Serialize(file, auth);
+                }
+
+                ShowMainWindow();
             }
 
         }
+
+        private void ShowMainWindow()
+        {
+            Hide();
+            MainWindow window = new MainWindow();
+            window.Show();
+            Close();
+        }
+
         private string Hash(string input)
         {
             byte[] temp = Encoding.UTF8.GetBytes(input);
