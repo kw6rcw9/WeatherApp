@@ -34,14 +34,22 @@
                 <ImageBrush ImageSource="/images/exit.png" Stretch="Uniform"/>
             </Button.Background>
         </Button>
-        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="MainScreenPanel" Visibility="Hidden" Grid.ColumnSpan="2">
+        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="MainScreenPanel"  Grid.ColumnSpan="2">
             <Image Source="/Images/icon.png" Height="50" Margin="0,50,0,0"/>
             <Label Margin="0, 20, 0, 30" Content="Погодное приложение" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="22" Foreground="White"/>
             <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}" Foreground="White" materialDesign:HintAssist.Hint="Введите город" x:Name="UserCityTextBox" HorizontalAlignment="Center"  TextWrapping="Wrap" VerticalAlignment="Top" Width="243"/>
             <Button Margin="0,30,0,0" x:Name="GetWeatherButton" Content="Узнать погоду" HorizontalAlignment="Center" RenderTransformOrigin="0.151,0.434" Height="26" Width="131" FontSize="14" Click="GetWeatherButton_Click"/>
             <Label x:Name="WeatherResults" Content="" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,20,0,0" Width="180"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="UserListPanel" Grid.ColumnSpan="2">
+        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="CabinetScreenPanel"  Grid.ColumnSpan="2" Visibility="Hidden" >
+           
+            <Label Margin="0, 20, 0, 30" Content="Личный кабинет" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="22" Foreground="White"/>
+            <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}" Foreground="White" materialDesign:HintAssist.Hint="Ваш логин" x:Name="UserLogin" HorizontalAlignment="Center"  TextWrapping="Wrap" VerticalAlignment="Top" Width="243"/>
+            <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}" Foreground="White" materialDesign:HintAssist.Hint="Ваша почта" x:Name="UserEmail" HorizontalAlignment="Center"  TextWrapping="Wrap" VerticalAlignment="Top" Width="243"/>
+            <Button Margin="0,30,0,0" x:Name="UserChangeButton" Content="Изменить" HorizontalAlignment="Center" RenderTransformOrigin="0.151,0.434" Height="26" Width="131" FontSize="14" Click="UserChangeButton_Click" />
+          
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="UserListPanel" Grid.ColumnSpan="2" Visibility="Hidden">
 
             <Label Margin="0, 20, 0, 15" Content="Список пользователей" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="22" Foreground="White"/>
             <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}" Foreground="White" materialDesign:HintAssist.Hint="Введите логин" x:Name="UserLoginCheckField" HorizontalAlignment="Center"  TextWrapping="Wrap" VerticalAlignment="Top" Width="243"/>
