@@ -34,7 +34,7 @@
                 <ImageBrush ImageSource="/images/exit.png" Stretch="Uniform"/>
             </Button.Background>
         </Button>
-        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="MainScreenPanel"  Grid.ColumnSpan="2">
+        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="MainScreenPanel"  Grid.ColumnSpan="2" Visibility="Hidden">
             <Image Source="/Images/icon.png" Height="50" Margin="0,50,0,0"/>
             <Label Margin="0, 20, 0, 30" Content="Погодное приложение" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="22" Foreground="White"/>
             <TextBox Style="{StaticResource MaterialDesignFloatingHintTextBox}" Foreground="White" materialDesign:HintAssist.Hint="Введите город" x:Name="UserCityTextBox" HorizontalAlignment="Center"  TextWrapping="Wrap" VerticalAlignment="Top" Width="243"/>
@@ -65,6 +65,72 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" x:Name="NotesScreenPanel"  Grid.ColumnSpan="2"  >
+            <Menu>
+                <MenuItem Header="Файл" Foreground="White" x:Name="MenuFile">
+                    <MenuItem Header="Новый Файл" x:Name="MenuNewFile" Foreground="Black" Click="MenuNewFile_Click">
+                        <MenuItem.Icon>
+                            <Image Source="/Images/file_icon.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Открыть Файл" Click="MenuOpenFile_Click" x:Name="MenuOpenFile" Foreground="Black">
+                        <MenuItem.Icon>
+                            <Image Source="/Images/lock_icon.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Сохранить Файл" Click="MenuSaveFile_Click" x:Name="MenuSaveFile" Foreground="Black">
+                        <MenuItem.Icon>
+                            <Image Source="/Images/key_icon.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    
+                </MenuItem>
+                
+                <MenuItem Header="Редактировать" x:Name="MenuEdit" Foreground="White">
+                    
+                        <MenuItem Header="Шрифт" x:Name="MenuSetFont" Foreground="Black">
+                            <MenuItem Header="Times New Roman" Click="TimesNewRomanSetText_Click"  x:Name="TimesNewRomanSetText" IsCheckable="true" StaysOpenOnClick="True" />
+                            <MenuItem Header="Verdana" Click="VerdanaSetText_Click" x:Name="VerdanaSetText" IsCheckable="true" StaysOpenOnClick="True" />
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem  Foreground="Black" x:Name="MenuCopyText" Header="Скопировать" Command="ApplicationCommands.Copy" InputGestureText="Ctr+C"/>
+                        <MenuItem  Foreground="Black" x:Name="MenuCutText" Header="Вырезать" Command="ApplicationCommands.Cut" InputGestureText="Ctr+X"/>
+                        <MenuItem  Foreground="Black" x:Name="MenuPasteText" Header="Вставить" Command="ApplicationCommands.Paste" InputGestureText="Ctr+V"/>
+                    </MenuItem>
+                
+            </Menu>
+            <ToolBarTray Background="Transparent">
+                <ToolBar Background="Transparent">
+                    <Button ToolTip="Сохранить файл" Style="{StaticResource MaterialDesignFlatAccentButton}" Click="MenuSaveFile_Click">
+                       <Image Source="/Images/key_icon.png"  Width=" 25" Height="25"/>
+              
+                    </Button>
+                    <Button ToolTip="Открыть файл" Style="{StaticResource MaterialDesignFlatAccentButton}" Click="MenuOpenFile_Click">
+                        <Image Source="/Images/lock_icon.png"  Width=" 25" Height="25"/>
+
+                    </Button>
+                    <Button ToolTip="Вырезать" Style="{StaticResource MaterialDesignFlatAccentButton}" Command="ApplicationCommands.Cut">
+                        <Image Source="/Images/cut_icon.png"  Width=" 25" Height="25"/>
+
+                    </Button>
+                    <Button ToolTip="Вставить" Style="{StaticResource MaterialDesignFlatAccentButton}" Command="ApplicationCommands.Paste">
+                        <Image Source="/Images/paste_icon.png"  Width=" 25" Height="25"/>
+
+                    </Button>
+                    <Label Content="Размер шрифта" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"   />
+                    <ComboBox Foreground="White" x:Name="SelectFontSize"  SelectionChanged="SelectFontSize_SelectionChanged">
+                        <ComboBoxItem Tag="10" Foreground="Black" Content="10px"/>
+                        <ComboBoxItem Tag="12" Foreground="Black" Content="12px" x:Name="SetDefaultSize"/>
+                        <ComboBoxItem  Tag="14" Foreground="Black" Content="14px"/>
+                        <ComboBoxItem  Tag="16" Foreground="Black" Content="16px"/>
+                        <ComboBoxItem Tag="20" Foreground="Black" Content="20px"/>
+                    </ComboBox>
+                </ToolBar>
+            </ToolBarTray>
+            <TextBox FontSize="12" x:Name="UserNotesTextBox" Margin="10" Style="{StaticResource MaterialDesignFilledTextBox}" materialDesign:HintAssist.Hint="Ваша заметка тут" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" MaxHeight="200" Foreground="White"/>
+         
         </StackPanel>
     </Grid>
 </Window>

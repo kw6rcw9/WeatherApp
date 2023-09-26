@@ -18,6 +18,8 @@ using testWPF.Models;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml.Serialization;
+using System.Net;
+using Microsoft.Win32;
 
 namespace testWPF
 {
@@ -31,17 +33,9 @@ namespace testWPF
         public MainWindow()
         {
             InitializeComponent();
-            ObservableCollection<User> items = new ObservableCollection<User>();
-            _db = new AppDbContext();
-            List<User> list = _db.Users.Select(x => x).ToList();
-            foreach (User user in list)
-            {
-                
-                items.Add(user);
-               
-            }
-            UsersListBox.ItemsSource = items;
+            UserListUpdate();
             MainScreen.IsChecked = true;
+            SetDefaultSize.IsSelected = true;
 
             if (!File.Exists("user.xml"))
             {
@@ -54,7 +48,25 @@ namespace testWPF
                 AuthUser authUser = (AuthUser)xml.Deserialize(file);
                 UserNameLabel.Content = authUser.Login;
             }
+            if (UserNameLabel.Content.ToString() != "admin".ToLower())
+            {
+                UserListScreen.Visibility = Visibility.Hidden;
+            }
 
+        }
+
+        private void UserListUpdate()
+        {
+            ObservableCollection<User> items = new ObservableCollection<User>();
+            _db = new AppDbContext();
+            List<User> list = _db.Users.Select(x => x).ToList();
+            foreach (User user in list)
+            {
+
+                items.Add(user);
+
+            }
+            UsersListBox.ItemsSource = items;
         }
 
         private void ShowAuthWindow()
@@ -73,36 +85,41 @@ namespace testWPF
                 MessageBox.Show("Укажите ваш город");
                 return;
             }
-           
+
             try
             {
-               string data = await GetWeather(city);
+                string data = await GetWeather(city);
                 var json = JObject.Parse(data);
                 string temp = json["main"]["temp"].ToString();
                 WeatherResults.Content = $"В городе {city} {Math.Round(Convert.ToSingle(temp))}°";
 
-            }
-            catch(HttpRequestException ex)
+        }
+            catch(WebException ex)
             {
-                MessageBox.Show("Укажите верный город");
+                
+                MessageBox.Show(ex.Message);
                 WeatherResults.Content = "";
             }
 
-            
-        }
+
+
+}
 
         private async Task<string> GetWeather(string city)
         {
             HttpClient client = new HttpClient();
             string url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric";
+
             string response = await client.GetStringAsync(url);
+
             return response;
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             string objName = ((RadioButton)sender).Name;
-            StackPanel[] panels = { MainScreenPanel, UserListPanel, CabinetScreenPanel };
+           StackPanel[] panels ={ MainScreenPanel,  CabinetScreenPanel, NotesScreenPanel, UserListPanel };
+            
             foreach (StackPanel panel in panels)
                 panel.Visibility = Visibility.Hidden;
             switch (objName)
@@ -115,6 +132,9 @@ namespace testWPF
                     break;
                 case "CabinetScreen":
                     CabinetScreenPanel.Visibility = Visibility.Visible;
+                    break;
+                case "NotesScreen":
+                    NotesScreenPanel.Visibility = Visibility.Visible;
                     break;
             }
         }
@@ -140,6 +160,7 @@ namespace testWPF
                     MessageBox.Show("Пользователь удален из базы данных");
                     UserLoginCheckField.Text = "";
                     DeleteUserButton.Content = "Удалили";
+                UserListUpdate();
                 }
             
         }
@@ -178,6 +199,78 @@ namespace testWPF
             using (FileStream file = new FileStream("user.xml", FileMode.Create))
             {
                 xml.Serialize(file, auth);
+            }
+            UserListUpdate();
+        }
+
+        private void MenuOpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.ShowDialog();
+            bool isFolder = (bool)openFileDialog.ShowDialog();
+
+            if (isFolder)
+            {
+                using(Stream stream = File.Open(openFileDialog.FileName, FileMode.Open))
+                {
+                    using(StreamReader reader = new StreamReader(stream))
+                    {
+                        UserNotesTextBox.Text = reader.ReadToEnd();
+                    }
+
+                }
+            }
+
+        }
+
+        private void MenuSaveFile_Click(object sender, RoutedEventArgs e)
+        {
+            SaveTextToFile();
+
+
+        }
+
+        private void TimesNewRomanSetText_Click(object sender, RoutedEventArgs e)
+        {
+            UserNotesTextBox.FontFamily = new FontFamily("Times New Roman");
+            VerdanaSetText.IsChecked = false;
+        }
+
+        private void VerdanaSetText_Click(object sender, RoutedEventArgs e)
+        {
+            UserNotesTextBox.FontFamily = new FontFamily("Verdana");
+            TimesNewRomanSetText.IsChecked = false;
+        }
+
+        private void SelectFontSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBoxItem comboBox = (ComboBoxItem)SelectFontSize.SelectedItem;
+            int fontSize = Convert.ToInt32(comboBox.Tag);
+            UserNotesTextBox.FontSize = fontSize;
+        }
+
+        private void MenuNewFile_Click(object sender, RoutedEventArgs e)
+        {
+            if (UserNotesTextBox.Text.Trim().Equals(""))
+                return;
+            SaveTextToFile();
+            UserNotesTextBox.Text = "";
+        }
+
+        private void SaveTextToFile()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            bool isFolder = (bool)saveFileDialog.ShowDialog();
+
+            if (isFolder)
+            {
+                using (Stream file = File.Open(saveFileDialog.FileName, FileMode.OpenOrCreate))
+                {
+                    using (StreamWriter writer = new StreamWriter(file))
+                    {
+                        writer.Write(UserNotesTextBox.Text);
+                    }
+                }
             }
         }
     }
